@@ -3,7 +3,7 @@ pipeline {
     label "jenkins-nodejs"
   }
   environment {
-    ORG = 'nicktate'
+    ORG = 'ntate22'
     APP_NAME = 'nick-jx-test'
     CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
   }
@@ -22,7 +22,7 @@ pipeline {
           sh "npm install"
           sh "CI=true DISPLAY=:99 npm test"
           sh "export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml"
-          sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
+          sh "jx step post build --image registry.hub.docker.com/$ORG/$APP_NAME:$PREVIEW_VERSION"
           dir('./charts/preview') {
             sh "make preview"
             sh "jx preview --app $APP_NAME --dir ../.."
@@ -48,7 +48,7 @@ pipeline {
           sh "npm install"
           sh "CI=true DISPLAY=:99 npm test"
           sh "export VERSION=`cat VERSION` && skaffold build -f skaffold.yaml"
-          sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)"
+          sh "jx step post build --image registry.hub.docker.com/$ORG/$APP_NAME:\$(cat VERSION)"
         }
       }
     }

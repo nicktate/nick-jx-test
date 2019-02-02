@@ -1,0 +1,30 @@
+apiVersion: skaffold/v1beta2
+kind: Config
+build:
+  artifacts:
+  - image: changeme
+    context: .
+    docker: {}
+  tagPolicy:
+    envTemplate:
+      template: '{{.DOCKER_REGISTRY}}/nicktate/nick-jx-test:{{.VERSION}}'
+  local: {}
+deploy:
+  kubectl: {}
+profiles:
+- name: dev
+  build:
+    artifacts:
+    - docker: {}
+    tagPolicy:
+      envTemplate:
+        template: '{{.DOCKER_REGISTRY}}/nicktate/nick-jx-test:{{.DIGEST_HEX}}'
+    local: {}
+  deploy:
+    helm:
+      releases:
+      - name: nick-jx-test
+        chartPath: charts/nick-jx-test
+        setValueTemplates:
+          image.repository: '{{.DOCKER_REGISTRY}}/nicktate/nick-jx-test'
+          image.tag: '{{.DIGEST_HEX}}'
